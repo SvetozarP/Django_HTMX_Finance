@@ -1,5 +1,4 @@
 {% extends 'tracker/base.html' %}
-{% load widget_tweaks %}
 
 {% block head_title %}
 
@@ -16,56 +15,7 @@
 
     <div class="relative overflow-x-auto text-white">
 
-    <!-- Define Grid container -->
-    <div class="flex flex-col-reverse md:grid md:grid-cols-4 md:gap-4" id="transaction-container">
-
-        <!-- 3/4 cols for the table of transactions -->
-        <div class="col-span-3">
-            {% if filter.qs %}
-                <div class="flex justify-between items-center px-4 py-3 border-b border-white">
-                <table class="table">
-                    <thead class="text-xs text-white uppercase">
-                    <tr class="border-b border-white">
-                        <th class="px-6 py-3">Date</th>
-                        <th class="px-6 py-3">Category</th>
-                        <th class="px-6 py-3">Type</th>
-                        <th class="px-6 py-3">Amount</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for transaction in filter.qs %}
-                        <tr class="border-b border-white">
-                            <td>{{ transaction.date }}</td>
-                            <td>{{ transaction.category }}</td>
-                            <td>{{ transaction.type }}</td>
-                            <td>{{ transaction.amount }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                </div>
-            {% else %}
-                <p class="text-2x1 text-white">No transactions found.</p>
-            {% endif %}
-        </div>
-        <!-- 1/4 cols for the filter form -->
-        <div class="col-span-1">
-            <form method="GET">
-                <div class="mb-2 form-control">
-                    {{ filter.form.transaction_type|add_label_class:"label text-white" }}
-                    {% render_field filter.form.transaction_type class="select bg-gray-50 text-gray-900" %}
-                </div>
-
-                <button class="btn btn-success px-3 py-2">
-                    Filter
-                </button>
-            </form>
-        </div>
-    </div>
-
-
-
+        {% include 'tracker/partials/transactions-container.html' %}
 
     </div>
 
