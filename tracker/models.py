@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from .managers import TransactionQuerySet
 
 class User(AbstractUser):
     pass
@@ -33,6 +34,8 @@ class Transaction(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     date = models.DateField()
+
+    objects = TransactionQuerySet.as_manager()
 
     def __str__(self):
         return f'{self.type} - {self.amount} - {self.date} - {self.user}'
