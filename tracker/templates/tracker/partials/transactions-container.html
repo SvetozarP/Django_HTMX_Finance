@@ -1,9 +1,38 @@
 {% load widget_tweaks %}
+{% load humanize %}
 <!-- Define Grid container -->
     <div class="flex flex-col-reverse md:grid md:grid-cols-4 md:gap-4" id="transaction-container">
 
         <!-- 3/4 cols for the table of transactions -->
         <div class="col-span-3">
+            <div class="my-4">
+                <h1 class="mt-4 mb-4 prose prose-2xl text-white">
+                    Totals
+                </h1>
+                <table class="table">
+                    <thead class="text-xs text-white uppercase border-b">
+                        <tr>
+                            <th>Total Income</th>
+                            <th>Total Expenses</th>
+                            <th>Net Income</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="border-b">
+                        <tr>
+                            <td>${{ total_income|floatformat:2|intcomma }}</td>
+                            <td>${{ total_expense|floatformat:2|intcomma }}</td>
+                            <td>${{ net_income|floatformat:2|intcomma }}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <h1 class="mt-8 mb-4 prose prose-2xl text-white">
+                Transactions
+            </h1>
+
             {% if filter.qs %}
                 <div class="flex justify-between items-center px-4 py-3 border-b border-white">
                 <table class="table">
