@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import pytest
 from django.urls import reverse
 
@@ -47,3 +48,27 @@ def test_transaction_type_e_filter(user_transactions, client):
     # expect all transactions to be expense
     for transaction in qs:
         assert transaction.type == 'expense'
+
+
+@pytest.mark.django_db
+def test_start_end_date_filter(user_transactions, client):
+    user = user_transactions[0].user
+    client.force_login(user)
+
+    start_date_cutoff = datetime.now().date() - timedelta(days=120)
+    get_params = {'start_date': start_date_cutoff}
+    response = client.get(reverse('transactions-list'), get_params)
+
+    qs = response.context['filter'].qs
+
+    for transaction in qs:
+        assert transaction.date >= start_date_cutoff
+
+    end_date_cutoff = datetime.now().date() - timedelta(days=20)
+    get_params = {'end_date': end_date_cutoff}
+    response = client.get(reverse('transactions-list'), get_params)
+
+    qs = response.context['filter'].qs
+
+    for transaction in qs:
+        assert transaction.date <= end_date_cutoff
