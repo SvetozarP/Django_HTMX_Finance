@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import pytest
 from django.urls import reverse
+from tracker.models import Category
 
 @pytest.mark.django_db
 def test_total_values_appear_on_list_page(user_transactions, client):
@@ -72,3 +73,20 @@ def test_start_end_date_filter(user_transactions, client):
 
     for transaction in qs:
         assert transaction.date <= end_date_cutoff
+
+
+@pytest.mark.django_db
+def test_category_filter(user_transactions, client):
+    user = user_transactions[0].user
+    client.force_login(user)
+
+    # Get the first 2 categories PKs
+    category_pks = Category.objects.all()[:2].values_list('pk', flat=True)
+    get_params = {'category': category_pks}
+
+    response = client.get(reverse('transactions-list'), get_params)
+
+    qs = response.context['filter'].qs
+
+    for transaction in qs:
+        assert transaction.category.pk in category_pks
