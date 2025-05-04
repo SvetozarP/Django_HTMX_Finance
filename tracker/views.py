@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from tracker.forms import TransactionForm
 from tracker.models import Transaction
 from tracker.filters import TransactionFilter
+from django_htmx.http import retarget
 
 # Create your views here.
 def index(request):
@@ -42,6 +43,10 @@ def create_transaction(request):
             transaction.save()
             context = {'message': 'Transaction created successfully'}
             return render(request, 'tracker/partials/transaction-success.html', context)
+        else:
+            context = {'form': form}
+            response = render(request, 'tracker/partials/create-transaction.html', context)
+            return retarget(response, "#transaction-block")
 
     context={'form': TransactionForm()}
     return render(request, 'tracker/partials/create-transaction.html', context)
