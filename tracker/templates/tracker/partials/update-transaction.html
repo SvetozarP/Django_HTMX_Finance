@@ -1,14 +1,14 @@
 {% load widget_tweaks %}
 <h1 class="mt-8 mb-4 prose prose-2xl text-white">
-    Create Transaction
+    Update Transaction
 </h1>
 
-<form hx-post="{% url 'create-transaction' %}">
+<form hx-post="{% url 'update-transaction' transaction.pk %}">
 
     {% include 'tracker/partials/transaction-form.html' %}
 
     <button class="bg-[#73B769] hover:bg-[#56964a] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        Add
+        Update
     </button>
     <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         hx-get="{% url 'transactions-list' %}"

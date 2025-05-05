@@ -1,0 +1,29 @@
+{% load widget_tweaks %}
+
+    <div class="mb-2 block form-control text-black">
+        <div class="block mb-1">
+            {{ form.type|add_label_class:"label text-white" }}
+        </div>
+        {% render_field form.type class="input w-full" %}
+    </div>
+    <div class="mb-2 block form-control">
+        <div class="block mb-1">
+            {{ form.amount|add_label_class:"label text-white" }}
+        </div>
+        {% render_field form.amount class="input text-black w-full" type="number" step="0.01" %}
+        {% for error in form.amount.errors %}
+            <p class="text-red-400 mt-1">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </div>
+    <div class="mb-2 form-control">
+        <div class="block mb-1">
+            {{ form.date|add_label_class:"label text-white" }}
+        </div>
+        {% render_field form.date class="input text-black w-full" %}
+    </div>
+    <div class="mb-2 form-control">
+        {{ form.category|add_label_class:"label text-white" }}
+        {% render_field form.category class="text-green-500 border-gray-300 rounded focus:ring-green-500" %}
+    </div>
