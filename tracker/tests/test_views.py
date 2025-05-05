@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pytest
+from django.db import transaction
 from django.urls import reverse
 from tracker.models import Category, Transaction
 from pytest_django.asserts import assertTemplateUsed
@@ -155,3 +156,17 @@ def test_update_transaction_request(new_user, transaction_dict_params, client):
 
     assert transaction.amount == 40
     assert transaction.date == datetime.now().date()
+
+
+@pytest.mark.django_db
+def test_delete_transaction_request(new_user, transaction_dict_params, client):
+    client.force_login(new_user)
+    assert Transaction.objects.filter(user=new_user).count() == 1
+    transaction_to_delete = Transaction.objects.first()
+    # send DELETE request
+    client.delete(
+        reverse('delete-transaction', kwargs = {'pk': transaction_to_delete.pk})
+    )
+
+    assert Transaction.objects.filter(user=new_user).count() == 0
+
