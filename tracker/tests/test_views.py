@@ -129,3 +129,29 @@ def test_cannot_add_transaction_with_negative_amount(new_user, transaction_dict_
     assert Transaction.objects.filter(user=new_user).count() == user_transaction_count
     assertTemplateUsed(response, 'tracker/partials/create-transaction.html')
     assert 'HX-retarget' in response.headers
+
+
+@pytest.mark.django_db
+def test_update_transaction_request(new_user, transaction_dict_params, client):
+    client.force_login(new_user)
+    assert Transaction.objects.filter(user=new_user).count() == 1
+
+    transaction = Transaction.objects.first()
+    # Update transaction via a POST request - mutate the dict params
+
+    transaction_dict_params['amount'] = 40
+    transaction_dict_params['date'] = datetime.now().date()
+
+    client.post(
+        reverse('update-transaction', kwargs = {'pk': transaction.pk}),
+        transaction_dict_params
+    )
+
+    # check the request has UPDATED the data
+
+    assert Transaction.objects.filter(user=new_user).count() == 1
+
+    transaction = Transaction.objects.first()
+
+    assert transaction.amount == 40
+    assert transaction.date == datetime.now().date()
