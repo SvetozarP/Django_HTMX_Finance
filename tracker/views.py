@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.core.paginator import Paginator
+from django.conf import settings
 from tracker.forms import TransactionForm
 from tracker.models import Transaction
 from tracker.filters import TransactionFilter
@@ -18,10 +20,14 @@ def transactions_list(request):
         queryset=Transaction.objects.filter(user=request.user).select_related('category')
     )
 
+    paginator = Paginator(transaction_filter.qs, settings.PAGE_SIZE)
+    transaction_page = paginator.page(1) #default as one when view is triggered
+
     total_income = transaction_filter.qs.get_total_income()
     total_expense = transaction_filter.qs.get_total_expenses()
 
     context = {
+        'transactions': transaction_page,
         'filter': transaction_filter,
         'total_income': total_income,
         'total_expense': total_expense,

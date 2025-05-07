@@ -46,7 +46,7 @@
                 </a>
 
             </div>
-            {% if filter.qs %}
+            {% if transactions %}
                 <div class="flex justify-between items-center px-4 py-3 border-b border-white">
                 <table class="table">
                     <thead class="text-xs text-white uppercase">
@@ -60,7 +60,7 @@
                     </thead>
 
                     <tbody>
-                    {% for transaction in filter.qs %}
+                    {% for transaction in transactions %}
                         <tr class="border-b border-white">
                             <td>{{ transaction.date }}</td>
                             <td>{{ transaction.category }}</td>
