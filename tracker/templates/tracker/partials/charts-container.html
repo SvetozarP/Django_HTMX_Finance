@@ -6,6 +6,13 @@
     <!-- 3/4 cols for the table of transactions -->
     <div class="col-span-3">
         {{ income_expense_barchart|safe }}
+
+        <div class="grid grid-cols-2">
+
+            {{ category_income_pie|safe }}
+            {{ category_expense_pie|safe }}
+
+        </div>
     </div>
     <!-- 1/4 cols for the filter form -->
     <div class="col-span-1">

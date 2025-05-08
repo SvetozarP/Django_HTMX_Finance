@@ -7,7 +7,7 @@ from tracker.forms import TransactionForm
 from tracker.models import Transaction
 from tracker.filters import TransactionFilter
 from django_htmx.http import retarget
-from tracker.charting import plot_income_expense_bar_chart
+from tracker.charting import plot_income_expense_bar_chart, plot_category_pie_chart
 
 # Create your views here.
 def index(request):
@@ -123,9 +123,17 @@ def transaction_charts(request):
         queryset=Transaction.objects.filter(user=request.user).select_related('category')
     )
     income_expense_bar = plot_income_expense_bar_chart(transaction_filter.qs)
+    category_income_pie = plot_category_pie_chart(
+        transaction_filter.qs.filter(type='income'),
+    )
+    category_expense_pie = plot_category_pie_chart(
+        transaction_filter.qs.filter(type='expense'),
+    )
     context = {
         'filter': transaction_filter,
         'income_expense_barchart': income_expense_bar.to_html(),
+        'category_income_pie': category_income_pie.to_html(),
+        'category_expense_pie': category_expense_pie.to_html(),
     }
     if request.htmx:
         return render(request, 'tracker/partials/charts-container.html', context)
