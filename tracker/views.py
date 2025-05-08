@@ -97,6 +97,8 @@ def delete_transaction(request, pk):
 
 @login_required()
 def get_transactions(request):
+    # import time
+    # time.sleep(2)
     page = request.GET.get('page', 1) # default page 1 if no page defined
     transaction_filter = TransactionFilter(
         request.GET,
