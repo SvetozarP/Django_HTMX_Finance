@@ -8,6 +8,8 @@ from tracker.models import Transaction
 from tracker.filters import TransactionFilter
 from django_htmx.http import retarget
 from tracker.charting import plot_income_expense_bar_chart, plot_category_pie_chart
+from tracker.resources import TransactionResource
+from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
@@ -96,7 +98,7 @@ def delete_transaction(request, pk):
     return render(request, 'tracker/partials/transaction-success.html', context)
 
 
-@login_required()
+@login_required
 def get_transactions(request):
     # import time
     # time.sleep(2)
@@ -116,7 +118,7 @@ def get_transactions(request):
         context
     )
 
-@login_required()
+@login_required
 def transaction_charts(request):
     transaction_filter = TransactionFilter(
         request.GET,
@@ -138,3 +140,20 @@ def transaction_charts(request):
     if request.htmx:
         return render(request, 'tracker/partials/charts-container.html', context)
     return render(request, 'tracker/charts.html', context)
+
+
+@login_required
+def export(request):
+
+    if request.htmx:
+        return HttpResponse(headers={'HX-Redirect': request.get_full_path()})
+
+    transaction_filter = TransactionFilter(
+        request.GET,
+        queryset=Transaction.objects.filter(user=request.user).select_related('category')
+    )
+
+    data = TransactionResource().export(transaction_filter.qs)
+    response = HttpResponse(data.csv, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="transactions.csv"'
+    return response
